@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ドランカー オンライン</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+:root{--bg:#eef0f4;--panel:#fff;--ink:#16223a;--mute:#5b6882;--line:#cfd6e4;--amber:#d98a12;--felt:#0d6a3b;--felt2:#0a5530;--red:#c8321f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1626;--panel:#16223a;--ink:#f1ecdf;--mute:#9aa6bd;--line:#2a3a5c;--amber:#f0a93b}}
+:root[data-theme="dark"]{--bg:#0e1626;--panel:#16223a;--ink:#f1ecdf;--mute:#9aa6bd;--line:#2a3a5c;--amber:#f0a93b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;font-weight:500;line-height:1.5}
+#app{max-width:720px;margin:0 auto;padding:12px;display:grid;gap:10px}
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font:400 26px "Dela Gothic One","Zen Kaku Gothic New",sans-serif;margin:0;letter-spacing:.06em}
+#info{color:var(--mute);font-size:13px;flex:1}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;text-align:center;width:100%}
+.btn{background:var(--amber);color:#1b1305;border:0;border-radius:8px;padding:9px 16px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.top{display:flex;align-items:center;gap:8px}
+.top b{font-size:16px}.badge{background:var(--ink);color:var(--bg);border-radius:5px;padding:0 8px;font-size:13px;font-weight:700}
+.num{margin-left:auto;font:400 22px "Dela Gothic One",sans-serif}.num small{font-size:12px;color:var(--mute)}
+.gauge{display:grid;grid-template-columns:repeat(20,1fr);gap:2px}
+.gauge u{height:14px;background:var(--line);border-radius:2px;display:block}
+.gauge u.on{background:var(--amber)}.gauge u.on.hot{background:var(--red)}
+.gauge u.m{box-shadow:2px 0 0 var(--mute)}
+.tk{display:grid;grid-template-columns:repeat(20,1fr);gap:2px;text-align:right;font-size:11px;color:var(--mute);line-height:1.25}
+.tk span.act{color:var(--red);font-weight:700}
+.meta{font-size:12px;color:var(--mute)}
+.hand{display:flex;gap:8px;justify-content:center;min-height:86px;flex-wrap:wrap}
+.card{--w:58px;width:var(--w);height:calc(var(--w)*1.4);border-radius:7px;background:#fbf7ee;color:#1a1a1a;border:1px solid #bdb6a4;position:relative;padding:0;display:block;text-align:left;box-shadow:0 2px 4px #0003;font-family:inherit;flex:none}
+.card.red{color:var(--red)}
+.card b{position:absolute;left:5px;top:2px;font:400 18px "Dela Gothic One",sans-serif}
+.card i{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-style:normal;font-size:28px}
+.card small{position:absolute;left:0;right:0;bottom:3px;text-align:center;font-size:10px}
+.card.off small{text-decoration:line-through;opacity:.5}
+.card.back{background:repeating-linear-gradient(45deg,#b3303d 0 5px,#8f2230 5px 10px);border:3px solid #fbf7ee}
+.card.rv{outline:3px solid var(--amber);outline-offset:1px}
+.card.sel{transform:translateY(-10px);outline:3px solid #3a86ff}
+button.card:disabled{opacity:1;cursor:default}
+button.card.live{cursor:pointer}button.card.live:hover{transform:translateY(-6px)}
+.table{background:radial-gradient(ellipse at center,var(--felt),var(--felt2));border-radius:14px;padding:12px;display:grid;gap:8px;justify-items:center;min-height:300px;color:#f1ecdf;align-content:space-between}
+.slot{width:calc(58px*1.2);height:calc(58px*1.4*1.2);border:2px dashed #ffffff44;border-radius:9px;display:grid;place-items:center}
+.slot .card{--w:70px}
+.mid{text-align:center;font-size:14px;min-height:56px;display:grid;align-content:center;gap:2px}
+.mid .win{font:400 18px "Dela Gothic One",sans-serif;color:#ffd27a}
+#msg{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;min-height:44px;text-align:center}
+#msg p{margin:0;flex-basis:100%}
+.legend{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.legend summary{cursor:pointer;font-weight:700}.legend ul{margin:6px 0 0;padding-left:18px}
+.ov{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:5;padding:12px}
+.ov>div{background:var(--panel);border-radius:14px;padding:24px 28px;text-align:center;display:grid;gap:12px;width:min(100%,360px)}
+.ov h2{font:400 26px "Dela Gothic One",sans-serif;margin:0}
+@media(max-width:420px){.card{--w:50px}.slot .card{--w:62px}.slot{width:72px;height:100px}.hand{gap:5px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><h1>ドランカー</h1><span id="info"></span><button class="btn ghost" data-a="leave">退出</button></header>
+<section class="side" id="opp" hidden></section>
+<section class="table" id="table" hidden></section>
+<section id="msg"></section>
+<section class="side" id="me" hidden></section>
+<details class="legend"><summary>ルール早見</summary>
+<ul>
+<li>強さ：A＞K＞Q＞J＞10…＞3＞2。ただし2はAにだけ勝つ。負けた側は自分の数字÷2(切り捨て)だけ酩酊が増える。</li>
+<li>♠蒸留酒：勝つと相手の酩酊+1／♣乱闘：負け時、自分の数字が相手の半分未満なら引き分け／♥介抱：勝つと数字÷4(最低1)だけ自分の酩酊を減らす(ショット清算後)／♦カクテル：勝ち・引き分けで親子を決め直す(ラウンド中固定)。</li>
+<li>酩酊 5：1枚公開 ／ 10：2枚公開 ／ 15：スート効果不可 ／ 20：負け。ペナルティはラウンド開始時の値で判定。</li>
+<li>ショット：1ゲーム1回、両者が出した後に宣言。相手に「相手のカードの数字÷2」の酩酊(スート効果なし)。</li>
+</ul></details>
+</div>
+<div id="ov"></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SU={S:['♠','蒸留酒'],C:['♣','乱闘'],H:['♥','介抱'],D:['♦','カクテル']},RK=r=>({14:'A',13:'K',12:'Q',11:'J'}[r]||String(r));
+let ws,S=null,sel=new Set(),pick=null,err='',retry=0,saved=null,qroom=(new URLSearchParams(location.search).get('room')||'').toUpperCase();
+try{saved=JSON.parse(sessionStorage.getItem('dorunka'))}catch(e){}
+const send=o=>{if(ws&&ws.readyState===1)ws.send(JSON.stringify(o))},N=p=>p?S.opp:'あなた';
+function connect(){ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host);
+  ws.onopen=()=>{retry=0;if(saved)send({t:'rejoin',room:saved.room,token:saved.token});render()};
+  ws.onmessage=e=>{const m=JSON.parse(e.data);
+    if(m.t==='joined'){saved={room:m.room,token:m.token};sessionStorage.setItem('dorunka',JSON.stringify(saved));err=''}
+    else if(m.t==='state'){S=m;if(S.hand){const ids=S.hand.map(c=>c.id);if(S.phase!=='reveal')sel=new Set();else sel=new Set([...sel].filter(i=>ids.includes(i)));if(!ids.includes(pick)||S.phase!=='play')pick=null}}
+    else if(m.t==='err'){err=m.msg;if(m.fatal)reset()}
+    render()};
+  ws.onclose=()=>{setTimeout(connect,Math.min(5000,500*++retry));render()}}
+function reset(){saved=null;S=null;sel=new Set();pick=null;sessionStorage.removeItem('dorunka')}
+const card=(c,cls='',live)=>{const k=`card ${c.s==='H'||c.s==='D'?'red':''} ${cls}`,in_=`<b>${RK(c.r)}</b><i>${SU[c.s][0]}</i><small>${SU[c.s][1]}</small>`;
+  return live!==undefined?`<button class="${k}" data-a="pick" data-v="${c.id}" ${live?'':'disabled'}>${in_}</button>`:`<div class="${k}">${in_}</div>`};
+const back=()=>'<div class="card back"></div>';
+const canPlay=()=>S.phase==='play'&&!S.pl[0]&&(S.parent===0||!!S.pl[1]);
+
+function side(p){const th=[[5,'公開1'],[10,'公開2'],[15,'スート封印'],[20,'敗北']],on=['play','shot','result'].includes(S.phase);
+  const cells=Array.from({length:20},(_,i)=>{const n=i+1,o=n<=S.g[p];return`<u class="${o?'on':''} ${o&&n>=15?'hot':''} ${n%5===0&&n<20?'m':''}"></u>`}).join('');
+  const tk=th.map(([n,t])=>`<span style="grid-column:${n-4}/${n+1}" class="${S.sg[p]>=n&&n<20?'act':''}">${n}<br>${t}</span>`).join('');
+  const live=(S.phase==='reveal'&&S.need[0]>0&&!S.pd[0])||canPlay();
+  const hand=p?S.oh.map(c=>c?card(c,'rv'+(S.off[1]?' off':'')):back()).join(''):S.hand.map(c=>card(c,`${S.rev.includes(c.id)?'rv':''} ${(S.phase==='reveal'?sel.has(c.id):pick===c.id)?'sel':''} ${S.off[0]?'off':''} ${live?'live':''}`,live)).join('');
+  return`<div class="top"><b>${esc(N(p))}</b>${on?`<span class="badge">${S.parent===p?'親':'子'}</span>`:''}<span class="meta">ショット：${S.su[p]?'使用済':S.so?'無効':'未使用'}</span><span class="num">${S.g[p]}<small> / 20</small></span></div><div class="gauge" role="img" aria-label="酩酊ゲージ ${S.g[p]}/20">${cells}</div><div class="tk">${tk}</div><div class="hand">${hand||'<span class="meta">手札なし</span>'}</div>`}
+
+function tableHTML(){const slot=p=>{const x=S.phase==='result'&&S.res?S.res.c[p]:S.pl[p];return`<div class="slot">${!x?'':x.r?card(x):back()}</div>`};
+  let mid='<span>カードを出してください</span>';if(S.phase==='shot')mid='<span>両者のカードが出ました</span>';
+  if(S.phase==='result'&&S.res){const r=S.res;mid=`<div class="win">${r.w===null?'引き分け':esc(N(r.w))+'の勝ち'}</div>`+[0,1].filter(p=>r.d[p]).map(p=>`<span>${esc(N(p))}の酩酊 +${r.d[p]}</span>`).join('')+r.L.map(t=>`<span>${esc(t)}</span>`).join('')}
+  return`${slot(1)}<div class="mid">${mid}</div>${slot(0)}`}
+
+function msgHTML(){const ph=S.phase,w=t=>`<p>${t}</p>`;let h='';
+  if(!S.oc)h+=w('相手の接続が切れています。再接続を待っています…');
+  if(ph==='reveal')h+=S.need[0]&&!S.pd[0]?w(`酩酊${S.sg[0]}：手札から${S.need[0]}枚を選んで公開します（${sel.size}/${S.need[0]}）`)+`<button class="btn" data-a="reveal" ${sel.size===S.need[0]?'':'disabled'}>公開する</button>`:w('相手が公開するカードを選んでいます…（両者がそろったら同時に公開されます）');
+  else if(ph==='play')h+=canPlay()?w(S.parent===0?'あなたが親です。カードを選んでください':'相手がカードを出しました。カードを選んでください')+`<button class="btn" data-a="play" ${pick!=null?'':'disabled'}>このカードを出す</button>`:w('相手が選んでいます…');
+  else if(ph==='shot')h+=S.sd[0]?w('相手の選択を待っています…'):w('ショットを宣言しますか？（1ゲームに1回）')+'<button class="btn" data-a="shot" data-v="1">ショット！</button><button class="btn ghost" data-a="shot" data-v="0">このままめくる</button>';
+  else if(ph==='result'){if(S.pend===0)h+=w('カクテル：このラウンドの親を決め直せます')+'<button class="btn" data-a="par" data-v="me">あなたが親</button><button class="btn" data-a="par" data-v="opp">相手が親</button>';
+    else if(S.pend===1)h+=w('相手が親子を決めています…');
+    else h+=w(S.res.next==='over'?'まもなく結果が出ます…':'まもなく次へ進みます…')}
+  return h}
+
+const box=h=>`<div class="ov"><div>${h}</div></div>`;
+function ovHTML(){
+  if(!ws||ws.readyState!==1)return box('<h2>接続中…</h2><span class="meta">無料サーバーは起動に1分ほどかかることがあります</span>');
+  if(!S)return box(`<h2>ドランカー</h2><span>オンライン対戦</span><input id="nm" maxlength="10" placeholder="ニックネーム" value="${esc(localStorage.getItem('dn')||'')}"><button class="btn" data-a="create">部屋を作る</button><span class="meta">または、友達からもらった合言葉で参加</span><input id="cd" maxlength="5" placeholder="合言葉" value="${esc(qroom)}"><button class="btn ghost" data-a="join">参加する</button>${err?`<span style="color:var(--red)">${esc(err)}</span>`:''}`);
+  if(S.phase==='lobby')return box(`<h2>合言葉 ${esc(S.room)}</h2><span>この合言葉か招待URLを友達に送ってください</span><button class="btn ghost" data-a="copy">招待URLをコピー</button><span class="meta">相手の参加を待っています…</span>`);
+  if(S.phase==='choose')return box(S.you===0?`<span>親と子を選択してください。</span><button class="btn" data-a="start" data-v="parent">親として始める</button><button class="btn" data-a="start" data-v="child">子として始める</button>`:`<h2>${esc(S.opp)}さんの部屋</h2><span>ホストが最初の親を選んでいます…</span>`);
+  if(S.phase==='over')return box(`<h2>${S.g[0]>=20?'酔い潰れた…あなたの負け':esc(S.opp)+'が酔い潰れた！あなたの勝ち'}</h2><span>あなた ${S.g[0]} ／ ${esc(S.opp)} ${S.g[1]}</span>${S.rm[0]?'<span class="meta">相手の返事を待っています…</span>':'<button class="btn" data-a="rematch">もう一度遊ぶ（先攻を交代）</button>'}<button class="btn ghost" data-a="leave">退出</button>`);
+  return''}
+
+function render(){const g=!!(S&&S.round>0);
+  $('info').textContent=g?`ラウンド${S.round} ・ ターン${Math.min(S.turns+1,2)}/2 ・ 引き分け${S.draws}/3 ・ 山札${S.deck}`:'';
+  for(const id of['opp','table','me'])$(id).hidden=!g;
+  if(g){$('opp').innerHTML=side(1);$('me').innerHTML=side(0);$('table').innerHTML=tableHTML();$('msg').innerHTML=msgHTML()}
+  else $('msg').innerHTML=''
+  const ov=ovHTML();if(!($('ov').querySelector('input')&&ov.includes('id="nm"')&&document.activeElement&&document.activeElement.tagName==='INPUT'))$('ov').innerHTML=ov}
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v;
+  if(a==='create'||a==='join'){const n=$('nm').value;localStorage.setItem('dn',n);err='';
+    if(a==='create')send({t:'create',name:n});else{qroom=$('cd').value.trim().toUpperCase();send({t:'join',room:qroom,name:n})}}
+  else if(!S)return;
+  else if(a==='copy'){const u=location.origin+'/?room='+S.room;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{t.textContent='コピーしました'},()=>{t.textContent=u})}
+  else if(a==='leave'){if(confirm('この部屋を退出します（部屋は閉じられます）。よろしいですか？')){send({t:'leave'});reset();render()}}
+  else if(a==='start')send({t:'start',who:v});
+  else if(a==='pick'){const id=+v;
+    if(S.phase==='reveal'&&S.need[0]&&!S.pd[0]){if(sel.has(id))sel.delete(id);else if(sel.size<S.need[0])sel.add(id);render()}
+    else if(canPlay()){pick=pick===id?null:id;render()}}
+  else if(a==='reveal'&&sel.size===S.need[0]){send({t:'reveal',ids:[...sel]})}
+  else if(a==='play'&&pick!=null){send({t:'play',id:pick});pick=null}
+  else if(a==='shot')send({t:'shot',use:v==='1'});
+  else if(a==='par')send({t:'parent',who:v});
+  else if(a==='rematch')send({t:'rematch'})});
+connect();render();
+</script>
+</body>
+</html>
